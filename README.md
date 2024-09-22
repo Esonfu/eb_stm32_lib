@@ -1,7 +1,9 @@
-#platform
-    stm32_freertos+mdk5.32
-#file
-##tlib(drives_file)
-    -gpio_pin(simulation) I2C
-    -gpio_pin(simulation) SPI
-   /****************end of file***********/
+# Platform
+STM32 FreeRTOS + MDK 5.32
+
+# File
+## TLib (Drives File)
+- GPIO Pin (Simulation) I2C
+- GPIO Pin (Simulation) SPI
+
+/**************** end of file ***********/
