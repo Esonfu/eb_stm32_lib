@@ -185,3 +185,29 @@ uint32_t t_phy_sw_smi_write(t_phy_sw_smi_t *me,uint32_t phyad, uint32_t regad, u
         t_smiZbit(me);            
     return T_SMI_OK; 
 }
+
+uint8_t rtl82xx_smiRead(t_phy_sw_smi_t *me,uint32_t phyaddr, uint32_t pageaddr,uint32_t regaddr, uint32_t * data)
+{
+   t_phy_sw_smi_write(me,phyaddr,0x1f,pageaddr);
+
+  *data = t_phy_sw_smi_read(me, phyaddr, regaddr);  // 读取指定寄存器
+   
+   t_phy_sw_smi_write(me,phyaddr,0x1f,0);//change  BMCR
+   
+   return 0;
+
+}
+
+uint8_t rtl82xx_smiWrite(t_phy_sw_smi_t *me,uint32_t phyaddr, uint32_t pageaddr,uint32_t regaddr, uint32_t * data)
+{
+
+t_phy_sw_smi_write(me,phyaddr,0x1f,pageaddr);//change  pagsr
+
+t_phy_sw_smi_write(me, phyaddr, regaddr, data);
+
+t_phy_sw_smi_write(me,phyaddr,0x1f,0);//change  BMCR
+    
+}
+
+
+
