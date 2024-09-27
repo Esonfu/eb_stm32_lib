@@ -1,5 +1,5 @@
 #include "t_smi_physw_lib.h"
-
+#include "t_phy_switch_reg_def.h"
 t_phy_sw_smi_t *t_phy_sw_smi_create(void *arg,
                                     t_phy_sw_smi_cfg_func pin_cfgIn_func,
                                     t_phy_sw_smi_cfg_func pin_cfgOut_func,
@@ -207,7 +207,7 @@ uint32_t rtl82xx_smiWrite(t_phy_sw_smi_t *me,uint32_t phyaddr, uint32_t pageaddr
 
   t_phy_sw_smi_write(me, phyaddr, regaddr, *data);
 
-	t_phy_sw_smi_read(me, phyaddr, regaddr,&regval);
+  t_phy_sw_smi_read(me, phyaddr, regaddr,&regval);
 	
   t_phy_sw_smi_write(me,phyaddr,0x1f,0);//change  BMCR
     
@@ -215,4 +215,20 @@ uint32_t rtl82xx_smiWrite(t_phy_sw_smi_t *me,uint32_t phyaddr, uint32_t pageaddr
 }
 
 
+uint32_t rtl8305_Fiber_Enable(t_phy_sw_smi_t *me,t_rtl_8305_port port)
+{
+    uint32_t reg;
+    if (me==NULL){
+         return -1;
+
+    }
+     t_phy_sw_smi_write(me,GLOBAL_CONTROL_REG_ADD,GLOBAL_CONTROL_PAGSR,PHY_PAGR_MODE);//// 切换Page至PHY page
+     t_phy_sw_smi_write(me,port,GLOBAL_CONTROL_PAGSR,0X0000);// 
+     t_phy_sw_smi_read(me,port,FIBER_REG,&reg);	//读出寄存器28原始状态			 
+     reg |= (0x01 << 5);// 将bit5置高
+     t_phy_sw_smi_write(me,port, FIBER_REG, reg);
+     t_phy_sw_smi_write(me,GLOBAL_CONTROL_REG_ADD,GLOBAL_CONTROL_PAGSR,MAC_PAGR_MODE);//// 切换Page至PHY page
+
+   return reg;
+}
 

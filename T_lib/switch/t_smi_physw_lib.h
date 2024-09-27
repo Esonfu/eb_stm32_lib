@@ -63,6 +63,8 @@ uint32_t rtl82xx_smiRead(t_phy_sw_smi_t *me,uint32_t phyaddr, uint32_t pageaddr,
 
 uint32_t rtl82xx_smiWrite(t_phy_sw_smi_t *me,uint32_t phyaddr, uint32_t pageaddr,uint32_t regaddr, uint32_t * data);
 
+/***********rtl8305NB Fiber EN  smi *******************/
+uint32_t rtl8305_Fiber_Enable(t_phy_sw_smi_t *me,t_rtl_8305_port port)
 
 #endif
 // End of file
