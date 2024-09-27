@@ -6,8 +6,7 @@
 #ifndef _T_SMI_8367_LIB_H_
 #define _T_SMI_8367_LIB_H_
 
-#include "stdio.h"
-#include "stdint.h"
+#include "t_platform.h"
 
 /**
  *
