@@ -6,7 +6,8 @@
 #ifndef _T_SMI_PHYSW_LIB_H_
 #define _T_SMI_PHYSW_LIB_H_
 
-#include "t_platform.h"
+#include "stdio.h"
+#include "stdint.h"
 
 /*smi delaytime*/
 #define T_PHY_SW_DELAY 20
@@ -58,9 +59,9 @@ uint32_t t_phy_sw_smi_read(t_phy_sw_smi_t *me,uint32_t phyad, uint32_t regad, ui
 uint32_t t_phy_sw_smi_write(t_phy_sw_smi_t *me,uint32_t phyad, uint32_t regad, uint32_t data);
 
 /***********rtl8211fs  smi  interface*******************/
-uint8_t rtl82xx_smiRead(t_phy_sw_smi_t *me,uint32_t phyaddr, uint32_t pageaddr,uint32_t regaddr, uint32_t * data);
+uint32_t rtl82xx_smiRead(t_phy_sw_smi_t *me,uint32_t phyaddr, uint32_t pageaddr,uint32_t regaddr);
 
-uint8_t rtl82xx_smiWrite(t_phy_sw_smi_t *me,uint32_t phyaddr, uint32_t pageaddr,uint32_t regaddr, uint32_t * data);
+uint32_t rtl82xx_smiWrite(t_phy_sw_smi_t *me,uint32_t phyaddr, uint32_t pageaddr,uint32_t regaddr, uint32_t * data);
 
 
 #endif

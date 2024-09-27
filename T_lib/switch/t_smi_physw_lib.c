@@ -88,7 +88,7 @@ void t_smiWriteBit(t_phy_sw_smi_t *me, uint32_t data)
     }
 }
 
-uint32_t t_phy_sw_smi_read(t_phy_sw_smi_t *me, uint32_t phyad, uint32_t regad, uint32_t *data)
+uint32_t t_phy_sw_smi_read(t_phy_sw_smi_t *me,uint32_t phyad, uint32_t regad, uint32_t * data) 
 {
     int i;
     uint32_t readBit;
@@ -97,118 +97,122 @@ uint32_t t_phy_sw_smi_read(t_phy_sw_smi_t *me, uint32_t phyad, uint32_t regad, u
     {
         return T_SMI_FAILED;
     }
-    if ((phyad > 31) || (regad > 31) || (data == NULL))
+    if ((phyad > 31) || (regad > 31) || (data == NULL))  
         return T_SMI_FAILED;
-    /*it lock the resource to ensure that SMI opertion is atomic,
+    /*it lock the resource to ensure that SMI opertion is atomic, 
      *the API is based on RTL865X, it is used to disable CPU interrupt,
      *if porting to other platform, please rewrite it to realize the same function
      */
     /* 32 continuous 1 as preamble*/
-    for (i = 0; i < 32; i++)
-        t_smiWriteBit(me, 1);
+    for(i=0; i<32; i++)
+        t_smiWriteBit(me,1);
 
     /* ST: Start of Frame, <01>*/
-    t_smiWriteBit(me, 0);
-    t_smiWriteBit(me, 1);
-
+    t_smiWriteBit(me,0);
+    t_smiWriteBit(me,1);
+    
     /* OP: Operation code, read is <10>*/
-    t_smiWriteBit(me, 1);
-    t_smiWriteBit(me, 0);
-
+    t_smiWriteBit(me,1);
+    t_smiWriteBit(me,0);
+    
     /* PHY Address */
-    for (i = 4; i >= 0; i--)
-        t_smiWriteBit(me, (phyad >> i) & 0x1);
-
+    for(i=4; i>=0; i--) 
+        t_smiWriteBit(me,(phyad>>i)&0x1);
+    
     /* Register Address */
-    for (i = 4; i >= 0; i--)
-        t_smiWriteBit(me, (regad >> i) & 0x1);
-
+    for(i=4; i>=0; i--) 
+        t_smiWriteBit(me,(regad>>i)&0x1);
+    
     /* TA: Turnaround <z0>, zbit has no clock in order to steal a clock to
-     *  sample data at clock falling edge
+     *  sample data at clock falling edge 
      */
     t_smiZbit(me);
-    t_smiReadBit(me, &readBit);
+    t_smiReadBit(me,&readBit);
 
     /* Data */
     *data = 0;
-    for (i = 15; i >= 0; i--)
+    for(i=15; i>=0; i--) 
     {
-        t_smiReadBit(me, &readBit);
-        *data = (*data << 1) | readBit;
+        t_smiReadBit(me,&readBit);
+        *data = (*data<<1) | readBit;
     }
-    t_smiWriteBit(me, 1);
+    t_smiWriteBit(me,1);
     t_smiZbit(me);
-    return T_SMI_OK;
+    return  T_SMI_OK;
 }
 
-uint32_t t_phy_sw_smi_write(t_phy_sw_smi_t *me, uint32_t phyad, uint32_t regad, uint32_t data)
+uint32_t t_phy_sw_smi_write(t_phy_sw_smi_t *me,uint32_t phyad, uint32_t regad, uint32_t data)
 {
     int i;
-    if (me == NULL || me->hwport == NULL || me->delay_func == NULL ||
+    if(me == NULL || me->hwport == NULL || me->delay_func == NULL ||
         me->write_func == NULL || me->read_func == NULL)
     {
         return T_SMI_FAILED;
     }
-    if ((phyad > 31) || (regad > 31) || (data > 0xFFFF))
+    if ((phyad > 31) || (regad > 31) || (data > 0xFFFF))  
         return T_SMI_FAILED;
-    /*it lock the resource to ensure that SMI opertion is atomic,
-     *the API is based on RTL865X, it is used to disable CPU interrupt,
-     *if porting to other platform, please rewrite it to realize the same function
-     */
+    /*it lock the resource to ensure that SMI opertion is atomic, 
+      *the API is based on RTL865X, it is used to disable CPU interrupt,
+      *if porting to other platform, please rewrite it to realize the same function
+      */  
     /* 32 continuous 1 as preamble*/
-    for (i = 0; i < 32; i++)
-        t_smiWriteBit(me, 1);
-
+    for(i=0; i<32; i++)
+        t_smiWriteBit(me,1);
+    
     /* ST: Start of Frame, <01>*/
-    t_smiWriteBit(me, 0);
-    t_smiWriteBit(me, 1);
+    t_smiWriteBit(me,0);
+    t_smiWriteBit(me,1);
 
     /* OP: Operation code, write is <01>*/
-    t_smiWriteBit(me, 0);
-    t_smiWriteBit(me, 1);
+    t_smiWriteBit(me,0);
+    t_smiWriteBit(me,1);
 
     /* PHY Address */
-    for (i = 4; i >= 0; i--)
-        t_smiWriteBit(me, (phyad >> i) & 0x1);
+    for(i=4; i>=0; i--) 
+        t_smiWriteBit(me,(phyad>>i)&0x1);
 
     /* Register Address */
-    for (i = 4; i >= 0; i--)
-        t_smiWriteBit(me, (regad >> i) & 0x1);
+    for(i=4; i>=0; i--) 
+        t_smiWriteBit(me,(regad>>i)&0x1);
 
     /* TA: Turnaround <10>*/
-    t_smiWriteBit(me, 1);
-    t_smiWriteBit(me, 0);
+    t_smiWriteBit(me,1);
+    t_smiWriteBit(me,0);
 
     /* Data */
-    for (i = 15; i >= 0; i--)
-        t_smiWriteBit(me, (data >> i) & 0x1);
-    t_smiZbit(me);
-    return T_SMI_OK;
+    for(i=15; i>=0; i--) 
+        t_smiWriteBit(me,(data>>i)&0x1);
+        t_smiZbit(me);            
+    return T_SMI_OK; 
 }
 
-uint32_t rtl82xx_smiRead(t_phy_sw_smi_t *me, uint32_t phyaddr, uint32_t pageaddr, uint32_t regaddr)
+uint32_t rtl82xx_smiRead(t_phy_sw_smi_t *me,uint32_t phyaddr, uint32_t pageaddr,uint32_t regaddr)
 {
-    uint32_t regval = 0;
-    t_phy_sw_smi_write(me, phyaddr, 0x1f, pageaddr);
+	 uint32_t regval=0;
+   t_phy_sw_smi_write(me,phyaddr,0x1f,pageaddr);
 
-    t_phy_sw_smi_read(me, phyaddr, regaddr, &regval); // 读取指定寄存器
+   t_phy_sw_smi_read(me, phyaddr, regaddr,&regval);  // 读取指定寄存器
+   
+   t_phy_sw_smi_write(me,phyaddr,0x1f,0);//change  BMCR
+   
+   return regval;
 
-    t_phy_sw_smi_write(me, phyaddr, 0x1f, 0); // change  BMCR
-
-    return regval;
 }
 
-uint32_t rtl82xx_smiWrite(t_phy_sw_smi_t *me, uint32_t phyaddr, uint32_t pageaddr, uint32_t regaddr, uint32_t *data)
+uint32_t rtl82xx_smiWrite(t_phy_sw_smi_t *me,uint32_t phyaddr, uint32_t pageaddr,uint32_t regaddr, uint32_t * data)
 {
-    uint32_t regval = 0;
+  uint32_t regval=0;
+  
+  t_phy_sw_smi_write(me,phyaddr,0x1f,pageaddr);//change  pagsr
 
-    t_phy_sw_smi_write(me, phyaddr, 0x1f, pageaddr); // change  pagsr
+  t_phy_sw_smi_write(me, phyaddr, regaddr, *data);
 
-    t_phy_sw_smi_write(me, phyaddr, regaddr, *data);
-
-    t_phy_sw_smi_read(me, phyaddr, regaddr, &regval);
-
-    t_phy_sw_smi_write(me, phyaddr, 0x1f, 0); // change  BMCR
-
-    return regval;
+	t_phy_sw_smi_read(me, phyaddr, regaddr,&regval);
+	
+  t_phy_sw_smi_write(me,phyaddr,0x1f,0);//change  BMCR
+    
+	return regval;
 }
+
+
+
